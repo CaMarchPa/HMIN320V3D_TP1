@@ -177,11 +177,11 @@ int main(int argc, char *argv[]) {
 	}
 	
   	// Partie calcul sur les matrices
- 
+ 	
 	// Definition d'une matrice de 5 lignes et 3 colonnes (et un plan) en double precision
 	// remplie au depart de 0
 	
-	CImg <double> matrice_A(5,3,1,1,0) ; 
+	CImg <double> matrice_A(8,nombre_de_points,1,1,0) ; 
 	CImg <double>::iterator it ; // defiition d'un iterateur (permet d'avoir le premier element de la matrice)
 	int lin, col, NlinA, NcolA, NlinB, NcolB, NlinC, NcolC ;
 	
@@ -189,7 +189,17 @@ int main(int argc, char *argv[]) {
 	NcolA = matrice_A.width() ;
 	
 	// Remplissage de la matrice A avec des valeurs aleatoires entre 0 et 10
-	matrice_A.rand(0,10) ;
+	// matrice_A.rand(0,10) ;
+	for (int j = 0; j < NlinA; j++) {
+		matrice_A(0, j) = xg[j]*xd[j];
+		matrice_A(1, j) = xg[j]*yd[j];
+		matrice_A(2, j) = xg[j];
+		matrice_A(3, j) = yg[j]*xd[j];
+		matrice_A(4, j) = yg[j]*yd[j];
+		matrice_A(5, j) = yg[j];
+		matrice_A(6, j) = xd[j];
+		matrice_A(7, j) = yd[j];
+	}
 	
 	// Affichage de la matrice A
 	std::cout << "Affichage de la matrice A" << std::endl;

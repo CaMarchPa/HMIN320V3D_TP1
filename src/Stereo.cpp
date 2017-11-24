@@ -1,6 +1,6 @@
 /*
  *  FirstProgram.cpp
- *  
+ *
  *
  *  Created by Olivier Strauss on 10/10/16.
  *  Copyright 2016 LIRMM. All rights reserved.
@@ -19,7 +19,7 @@ using namespace cimg_library;
 int MatMult(double *A, double *B, double *C, int Nlin, int Ncom, int Ncol) {
 	int lin, col, k ;
 	double *ptA, *ptB, *ptC ;
-	
+
 	ptC = C ;
 	for(lin = 0 ; lin<Nlin ; lin++)
 	{
@@ -31,8 +31,8 @@ int MatMult(double *A, double *B, double *C, int Nlin, int Ncom, int Ncol) {
 			for(k = 0 ; k<Ncom ; k++)
 			{
 				(*ptC) += (*ptA) * (*ptB) ;
-				ptA++ ; 
-				ptB+= Ncol ; 
+				ptA++ ;
+				ptB+= Ncol ;
 			}
 		}
 	}
@@ -49,7 +49,7 @@ int Intersection( double L[3], int Dx, int Dy, int x_inter[2], int y_inter[2] ) 
 	x[1] = Dx-1 ;
 	y[2] = 0 ;
 	y[3] = Dy-1 ;
-	
+
 	if(fabs(L[0])>1e-16)
 	{ // droite de la forme x = b'y + c' ;
 		b = -L[1]/L[0] ;
@@ -57,7 +57,7 @@ int Intersection( double L[3], int Dx, int Dy, int x_inter[2], int y_inter[2] ) 
 		x[2] = b * y[2] + c ;
 		x[3] = b * y[3] + c ;
 	}
-	else 
+	else
 	{
 		x[2] = -Dx ;
 		x[3] = -Dx ;
@@ -70,12 +70,12 @@ int Intersection( double L[3], int Dx, int Dy, int x_inter[2], int y_inter[2] ) 
 		y[0] = a * x[0] + c ;
 		y[1] = a * x[1] + c ;
 	}
-	else 
+	else
 	{
 		y[0] = -Dy ;
 		y[1] = -Dy ;
 	}
-	
+
 	for(n=0 ; n<4 ; n++)
 	{
 		if( (x[n]>=0.0) && (y[n]>=0.0) && (x[n]<=Dx) && (y[n]<=Dy) && (nb_points_ok<2) )
@@ -85,9 +85,9 @@ int Intersection( double L[3], int Dx, int Dy, int x_inter[2], int y_inter[2] ) 
 			nb_points_ok ++ ;
 		}
 	}
-	
-	if(nb_points_ok==2) return 1 ; 
-	else return 0 ;	
+
+	if(nb_points_ok==2) return 1 ;
+	else return 0 ;
 }
 
 
@@ -95,31 +95,31 @@ int main(int argc, char *argv[]) {
 	int nombre_de_points = 2, n=0 ;
 	int xd[nombre_de_points], yd[nombre_de_points], xg[nombre_de_points], yg[nombre_de_points] ;
 	char droite_gaughe = 'd' ;
-	
-	if(argc<2) 
+
+	if(argc<2)
 	{
 		printf("\nCe programme a deux arguments d'appel qui sont les deux images droite et gauche\n") ;
 		printf("Il faut le lancer de la forme ./Stereo ImageDroite.tif ImageGauche.tif\n") ;
 		return 0 ;
 	}
-	
+
 	// Chargement des deux images dont les noms ont été passés au programme principal
 	CImg<unsigned char> imageD(argv[1]),imageG(argv[2]) ;
 	// Definition des couleurs de trace (rouge, vert, bleu)
 	const unsigned char red[] = { 255,0,0 }, green[] = { 0,255,0 }, blue[] = { 0,0,255 };
 	// Creation des objets d'affichage
 	CImgDisplay Droite_disp(imageD,"Image droite"), Gauche_disp(imageG,"Image gauche");
-	
+
 	// Selection de nombre_de_points paires de points (en commencant par l'image droite
-	while (!Droite_disp.is_closed() && !Gauche_disp.is_closed() && n<nombre_de_points) 
+	while (!Droite_disp.is_closed() && !Gauche_disp.is_closed() && n<nombre_de_points)
 	{
-		switch (droite_gaughe) 
+		switch (droite_gaughe)
 		{
 			case 'd' :
   		Gauche_disp.set_title("%s","Image gauche");
 		  Droite_disp.set_title("%s","Cliquez ici") ;
 				Droite_disp.wait();
-				if (Droite_disp.button() && Droite_disp.mouse_y()>=0) 
+				if (Droite_disp.button() && Droite_disp.mouse_y()>=0)
 				{
 					yd[n] = Droite_disp.mouse_y();
 					xd[n] = Droite_disp.mouse_x();
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 		  Droite_disp.set_title("%s","Image droite") ;
 				Gauche_disp.set_title("%s","Cliquez ici");
 				Gauche_disp.wait();
-				if (Gauche_disp.button() && Gauche_disp.mouse_y()>=0) 
+				if (Gauche_disp.button() && Gauche_disp.mouse_y()>=0)
 				{
 					yg[n] = Gauche_disp.mouse_y();
 					xg[n] = Gauche_disp.mouse_x();
@@ -138,15 +138,15 @@ int main(int argc, char *argv[]) {
 					droite_gaughe = 'd' ; n++ ;
 				} break ;
 			default : break;
-		}		
+		}
 	}
-	
+
 	// Affichage de tous les points en vert
 	for(n=0 ; n<nombre_de_points ; n++)  {
 		imageD.draw_circle(xd[n],yd[n],3,green,1.0,1).display(Droite_disp);
 		imageG.draw_circle(xg[n],yg[n],3,green,1.0,1).display(Gauche_disp);
 	}
-	
+
 	// Selection de deux points dans l'image droite et affichage de la droite passant par ces deux points
 	n=0 ;
 	double delta, L[3] ;
@@ -154,13 +154,13 @@ int main(int argc, char *argv[]) {
 	while (!Droite_disp.is_closed() && !Gauche_disp.is_closed() && n<2) {
 		Droite_disp.set_title("%s","Cliquez deux points") ;
 		Droite_disp.wait();
-		if (Droite_disp.button() && Droite_disp.mouse_y()>=0) 
+		if (Droite_disp.button() && Droite_disp.mouse_y()>=0)
 		{
 			yd[n] = Droite_disp.mouse_y();
 			xd[n] = Droite_disp.mouse_x();
 			imageD.draw_circle(xd[n],yd[n],3,red,1.0,1).display(Droite_disp);
 			n = n+1 ;
-		}			
+		}
 	}
 
 	delta = (double)xd[0]*(double)yd[1] - (double)xd[1]*(double)yd[0] ;
@@ -168,26 +168,26 @@ int main(int argc, char *argv[]) {
 
 	L[0] = (double)( yd[1] - yd[0] ) ;
 	L[1] = (double)( xd[0] - xd[1] ) ;
-	L[2] = (double)xd[1]*(double)yd[0] - (double)xd[0]*(double)yd[1] ;		
-			
+	L[2] = (double)xd[1]*(double)yd[0] - (double)xd[0]*(double)yd[1] ;
+
 	n = Intersection(L, imageD.width(), imageD.height(), x_inter, y_inter ) ;
 	if(n) {
 		std::cout << "vrai" << std::endl;
 		imageD.draw_line(x_inter[0],y_inter[0],x_inter[1],y_inter[1],red).display(Droite_disp);
 	}
-	
+
   	// Partie calcul sur les matrices
- 	
+
 	// Definition d'une matrice de 5 lignes et 3 colonnes (et un plan) en double precision
 	// remplie au depart de 0
-	
-	CImg <double> matrice_A(8,nombre_de_points,1,1,0) ; 
+
+	CImg <double> matrice_A(8,nombre_de_points,1,1,0) ;
 	CImg <double>::iterator it ; // defiition d'un iterateur (permet d'avoir le premier element de la matrice)
 	int lin, col, NlinA, NcolA, NlinB, NcolB, NlinC, NcolC ;
-	
+
 	NlinA = matrice_A.height() ;
 	NcolA = matrice_A.width() ;
-	
+
 	// Remplissage de la matrice A avec des valeurs aleatoires entre 0 et 10
 	// matrice_A.rand(0,10) ;
 	for (int j = 0; j < NlinA; j++) {
@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
 		matrice_A(6, j) = xd[j];
 		matrice_A(7, j) = yd[j];
 	}
-	
+
 	// Affichage de la matrice A
 	std::cout << "Affichage de la matrice A" << std::endl;
 	it = matrice_A.begin() ;
@@ -212,14 +212,14 @@ int main(int argc, char *argv[]) {
 		}
 		printf("\n") ;
 	}
-	
- // Definition de la matrice B comme etant la pseudo-inverse de A 
-	CImg <double> matrice_B =	matrice_A.pseudoinvert() ;
+
+ 	// Definition de la matrice B comme etant la pseudo-inverse de A
+	CImg <double> matrice_B(1, 8, 1, 1,-1);
 	printf("\n\n\n") ;
-	
+
 	NlinB = matrice_B.height() ;
 	NcolB = matrice_B.width() ;
-	
+
 	// Affichage de la matrice B
 	it = matrice_B.begin() ;
 	std::cout << "Affichage de la matrice B" << std::endl;
@@ -231,16 +231,28 @@ int main(int argc, char *argv[]) {
 		}
 		printf("\n") ;
 	}
-	
+
+	CImg <double> matrice_Apseudo = matrice_A.pseudoinvert();
+	it = matrice_Apseudo.begin() ;
+	printf("pseudoinvert de A\n");
+	for( lin=0 ; lin<NlinA ; lin++)
+	{
+		for( col=0 ; col<NcolA ; col++, it++)
+		{
+			printf("[%g]",(*it)) ;
+		}
+		printf("\n") ;
+	}
+
 	CImg <double> matrice_C(NlinA,NcolB,1,1,0) ;
 	NlinC = matrice_C.height() ;
 	NcolC = matrice_C.width() ;
-	
+
 	printf("\n\n\n") ;
-	
-	// Calcul de C = A * B au sens des matrices 
-	MatMult((double *)matrice_A.begin(), (double *)matrice_B.begin(), (double *)matrice_C.begin(), NlinC, NcolA, NcolC) ;
-	
+
+	// Calcul de C = A * B au sens des matrices
+	MatMult((double *)matrice_Apseudo.begin(), (double *)matrice_B.begin(), (double *)matrice_C.begin(), matrice_C.height(), matrice_A.width(), matrice_C.width()) ;
+
 	// Affichage de la matrice C
 	std::cout << "Affichage de la matrice C" << std::endl;
 	it = matrice_C.begin() ;
@@ -252,9 +264,53 @@ int main(int argc, char *argv[]) {
 		}
 		printf("\n") ;
 	}
-	
+
+	CImg<double> matrice_CTranspose = matrice_C.transpose();
+	it = matrice_C.begin();
+	printf("Affichage de la matrice transposée\n");
+	for (int j = 0; j < matrice_C.height(); j++)
+	{
+		for (int i = 0; i < matrice_C.width(); i++, it++)
+		{
+			printf("[%g]", (*it));
+		}
+		printf("\n");
+	}
+
 	// Attente de la fermeture d'une des images pour arrêter le programme
-	while (!Droite_disp.is_closed() && !Gauche_disp.is_closed()) {};
-	
+
+	while (!Droite_disp.is_closed() && !Gauche_disp.is_closed()) {
+		Gauche_disp.set_title("%s","Cliquez ici M") ;
+		Gauche_disp.wait();
+		if (Gauche_disp.button() && Gauche_disp.mouse_y()>=0)
+		{
+			int xg = Gauche_disp.mouse_x();
+			int yg = Gauche_disp.mouse_y();
+
+			imageG.draw_circle(xg,yg,3,red,1.0,1).display(Gauche_disp);
+
+			CImg <double> m_g(1,3,1, 1, 1);
+			CImg <double> m_L(3, 1, 1, 0);
+
+			m_g(0, 0, 0) = xg;
+			m_g(0, 1, 0) = yg;
+			MatMult((double *) matrice_CTranspose.begin(), (double *) m_g.begin(), (double *)m_L.begin(), 1, matrice_C.width(), 3);
+
+			L[0] = m_L(0, 0, 0);
+			L[1] = m_L(1, 0, 0);
+			L[2] = m_L(2, 0, 0);
+
+			n = Intersection(L, imageG.width(), imageG.height(), x_inter, y_inter ) ;
+			if(n) {
+				std::cout << "vrai gauche" << std::endl;
+				imageG.draw_line(x_inter[0],y_inter[0],x_inter[1],y_inter[1],red).display(Gauche_disp);
+			}
+		}
+
+		// L[0] = (double)( yd[1] - yd[0] ) ;
+		// L[1] = (double)( xd[0] - xd[1] ) ;
+		// L[2] = (double)xd[1]*(double)yd[0] - (double)xd[0]*(double)yd[1]
+	}
+
 	return 0;
 }

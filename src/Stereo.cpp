@@ -92,7 +92,7 @@ int Intersection( double L[3], int Dx, int Dy, int x_inter[2], int y_inter[2] ) 
 
 
 int main(int argc, char *argv[]) {
-	int nombre_de_points = 2, n=0 ;
+	int nombre_de_points = 3, n=0 ;
 	int xd[nombre_de_points], yd[nombre_de_points], xg[nombre_de_points], yg[nombre_de_points] ;
 	char droite_gaughe = 'd' ;
 
@@ -266,11 +266,11 @@ int main(int argc, char *argv[]) {
 	}
 
 	CImg<double> matrice_CTranspose = matrice_C.transpose();
-	it = matrice_C.begin();
-	printf("Affichage de la matrice transposée\n");
-	for (int j = 0; j < matrice_C.height(); j++)
+	it = matrice_CTranspose.begin();
+	printf("\n\nAffichage de la matrice transposée\n");
+	for (int j = 0; j < matrice_CTranspose.height(); j++)
 	{
-		for (int i = 0; i < matrice_C.width(); i++, it++)
+		for (int i = 0; i < matrice_CTranspose.width(); i++, it++)
 		{
 			printf("[%g]", (*it));
 		}
@@ -294,22 +294,19 @@ int main(int argc, char *argv[]) {
 
 			m_g(0, 0, 0) = xg;
 			m_g(0, 1, 0) = yg;
-			MatMult((double *) matrice_CTranspose.begin(), (double *) m_g.begin(), (double *)m_L.begin(), 1, matrice_C.width(), 3);
+
+			MatMult((double *) matrice_CTranspose.begin(), (double *) m_g.begin(), (double *)m_L.begin(), 1, matrice_CTranspose.width(), 3);
 
 			L[0] = m_L(0, 0, 0);
-			L[1] = m_L(1, 0, 0);
-			L[2] = m_L(2, 0, 0);
+			L[1] = m_L(0, 0, 0);
+			L[2] = m_L(0, 0, 0);
 
 			n = Intersection(L, imageG.width(), imageG.height(), x_inter, y_inter ) ;
 			if(n) {
-				std::cout << "vrai gauche" << std::endl;
+				
 				imageG.draw_line(x_inter[0],y_inter[0],x_inter[1],y_inter[1],red).display(Gauche_disp);
 			}
 		}
-
-		// L[0] = (double)( yd[1] - yd[0] ) ;
-		// L[1] = (double)( xd[0] - xd[1] ) ;
-		// L[2] = (double)xd[1]*(double)yd[0] - (double)xd[0]*(double)yd[1]
 	}
 
 	return 0;
